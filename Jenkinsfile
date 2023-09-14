@@ -1,5 +1,5 @@
 pipeline{
-    tool {
+    tools {
         maven 'maven'
     }
     stages {
