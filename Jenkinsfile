@@ -4,9 +4,6 @@ pipeline {
             label 'maven'
         }
     }
-    tools {
-        maven 'Maven 3.6.3' // Use the name given in Global Tool Configuration
-    }
     stages {
         stage('Build') {
             steps {
