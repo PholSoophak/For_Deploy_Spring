@@ -1,7 +1,8 @@
-pipeline{
-  agent {
-    node {
-      label 'maven'
+pipeline {
+    agent {
+        node {
+            label 'maven'
+        }
     }
     stages {
         stage('Build') {
@@ -11,18 +12,16 @@ pipeline{
                 sh 'docker build -t sophak12/spring-api .'
             }
         }
-        stage ('Test'){
+        stage('Test') {
             steps {
                 echo "Jes tae tes leng tov :)"
                 sh 'mvn test'
             }
-
         }
-        stage ('Deploy'){
+        stage('Deploy') {
             steps {
                 sh 'docker run -d -p 9999:8080 sophak12/spring-api'
             }
         }
     }
 }
-// hi I rename Repository name
