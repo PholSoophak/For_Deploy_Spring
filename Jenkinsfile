@@ -1,7 +1,7 @@
 pipeline {
     agent {
         node {
-            label 'maven'
+            label 'maven && jdk11'
         }
     }
     stages {
