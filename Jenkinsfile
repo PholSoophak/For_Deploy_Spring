@@ -47,17 +47,15 @@ pipeline {
         stage('Upload Scan to DefectDojo') {
             steps {
                 defectDojoPublisher(
-                    defectDojoUrl: 'http://35.187.239.28',
-                    defectDojoTokenCredentialId: 'defectdojo_token', // Credentials ID configured in Jenkins for the DefectDojo API token
+                    defectDojoUrl: 'http://35.187.239.28:8080',
+                    defectDojoCredentialsId: 'defectdojo_token', // Corrected credentials ID parameter
                     scanType: 'Dependency Check Scan',
                     artifact: 'target/dependency-check-report.xml',
-                    autoCreateEngagement: true, // Automatically create engagement if not exists
-                    autoCreateProduct: true, // Automatically create product if not exists
-                    reimportScan: true, // Reupload scan if it already exists
+                    autoCreateEngagements: true, // Corrected parameter for auto-creating engagements
+                    autoCreateProducts: true, // Corrected parameter for auto-creating products
+                    reimport: true, // Corrected parameter for re-uploading scans
                     engagementName: 'Automated Engagement - Spring API',
                     productName: 'Spring API Project',
-                    environment: 'Development',
-                    buildId: "${env.BUILD_ID}",
                     deduplicationOnEngagement: true,
                     closeOldFindings: true,
                     tags: 'v1,dependency-check'
