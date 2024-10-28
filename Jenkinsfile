@@ -3,8 +3,8 @@ pipeline {
         label 'maven'
     }
     environment {
-        TIMESTAMP = sh(script: 'TZ="Asia/Phnom_Penh" date +%Y%m%d%H%M%S', returnStdout: true).trim()
-        DOCKER_IMAGE_NAME = "devsec_spring_maven:${TIMESTAMP}"
+        DATE_TIME = sh(script: 'TZ="Asia/Phnom_Penh" date +%Y%m%d%H%M', returnStdout: true).trim()
+        DOCKER_IMAGE_NAME = "devsec_spring_maven:${DATE_TIME}"
     }
     stages {
         stage('Build Images') {
@@ -51,7 +51,7 @@ pipeline {
         stage('Upload Scan to DefectDojo') {
             steps {
                 defectDojoPublisher(
-                    defectDojoUrl: 'http://35.187.239.2:8080',
+                    defectDojoUrl: 'http://35.187.239.28:8080',     
                     defectDojoCredentialsId: 'defectdojo_token', // Jenkins credentials ID for DefectDojo token
                     scanType: 'Dependency Check Scan',
                     artifact: 'target/dependency-check-report.xml',
