@@ -3,8 +3,8 @@ pipeline {
         label 'maven'
     }
     environment {
-        GIT_TAG = sh(script: 'git describe --tags --abbrev=0 || echo "no-tag"', returnStdout: true).trim()
-        COMMIT_HASH = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
+        TIMESTAMP = sh(script: 'TZ="Asia/Phnom_Penh" date +%d%m%Y%H%M', returnStdout: true).trim()
+        DOCKER_IMAGE_NAME = "devsec_spring_maven:${TIMESTAMP}"
         DOCKER_IMAGE_NAME = "devsec_spring_maven:${GIT_TAG == 'no-tag' ? COMMIT_HASH : GIT_TAG}-${COMMIT_HASH}"
     }
     stages {
@@ -12,17 +12,23 @@ pipeline {
             steps {
                 sh 'mvn clean install'
                 sh 'mvn package'
-                sh 'docker build -t ${DOCKER_IMAGE_NAME} .'
+                // Run OWASP Dependency Check to generate the vulnerability report
+                echo'Check scan dependencies'
+                sh 'mvn org.owasp:dependency-check-maven:check'
+                // Build the Docker image with dynamic tagging
+                sh "docker build -t ${DOCKER_IMAGE_NAME} ."
                 echo "Docker image built: ${DOCKER_IMAGE_NAME}"  // Echo the new image name and tag
                 sh 'docker images | grep devsec_spring_maven'    // Show the newly built image specifically
             }
         }
+        
         stage('Test Maven') {
             steps {
                 echo "Running tests..."
                 sh 'mvn test'
             }
         }
+
         stage('SonarQube Analysis') {
             steps {
                 script {
@@ -36,20 +42,21 @@ pipeline {
                 }
             }
         }
-        // Wait for the SonarQube Quality Gate result
-        // stage('Quality Gate') {
-        //     steps {
-        //         script {
-        //             def qg = waitForQualityGate abortPipeline: false, credentialsId: 'sonar-token'
-        //             if (qg.status != 'OK') {
-        //                 echo "Quality gate failed with status: ${qg.status}"
-        //                 // Optionally set a warning or handle the failure in a custom way
-        //             } else {
-        //                 echo "Quality gate passed successfully."
-        //             }
-        //         }
-        //     }
-        // }
+        
+        stage('Quality Gate') {
+            steps {
+                script {
+                    def qg = waitForQualityGate abortPipeline: false, credentialsId: 'sonar-token'
+                    if (qg.status != 'OK') {
+                        echo "Quality gate failed with status: ${qg.status}"
+                        // Optionally set a warning or handle the failure in a custom way
+                    } else {
+                        echo "Quality gate passed successfully."
+                    }
+                }
+            }
+        }
+        
         stage('Upload Scan to DefectDojo') {
             steps {
                 script {
@@ -71,7 +78,7 @@ pipeline {
 
         stage('Deploy to dev env') {
             steps {
-                echo "ot torn deploy teee"
+                echo "Not yet deploying to dev environment."
                 echo "Skipping deploy stage for now."
             }
         }
