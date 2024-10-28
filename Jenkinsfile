@@ -36,7 +36,7 @@ pipeline {
                 }
             }
         }
-        Wait for the SonarQube Quality Gate result
+        // Wait for the SonarQube Quality Gate result
         stage('Quality Gate') {
             steps {
                 script {
