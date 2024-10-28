@@ -12,13 +12,14 @@ pipeline {
         }
         stage('Test') {
             steps {
-                echo "Jes tae tes leng tov :)"
+                echo "Jes tae test leng tov :)"
                 sh 'mvn test'
             }
         }
         stage('Deploy') {
             steps {
-                sh 'docker run -d -p 9999:8080 sophak12/spring-api'
+                // sh 'docker run -d -p 9999:8080 sophak12/spring-api'
+                echo "Not yet run deploy"
             }
         }
     }
