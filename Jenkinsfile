@@ -3,19 +3,17 @@ pipeline {
         label 'maven'
     }
     environment {
-        // Replace with your SonarQube instance and token
-        SONARQUBE_SERVER = 'http://34.124.243.166:9001'
-        SONARQUBE_TOKEN = 'squ_f532b03bc7446ec1f97b404ca40ae1fb04a8a9b3'
+        DOCKER_IMAGE_NAME = 'devsec_spring_maven'
     }
     stages {
         stage('Build Images') {
             steps {
                 sh 'mvn clean install'
                 sh 'mvn package'
-                sh 'docker build -t sophak12/spring-api .'
+                sh 'docker build -t ${DOCKER_IMAGE_NAME} .'
             }
         }
-        stage('Test') {
+        stage('Test Maven') {
             steps {
                 echo "Running tests..."
                 sh 'mvn test'
@@ -24,14 +22,12 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 script {
-                    // Use SonarQube environment and specify the login token
-                    withSonarQubeEnv('SonarQube') {
+                    // Use the configured SonarQube server name (replace 'sonarqube_server' with your SonarQube configuration name)
+                    withSonarQubeEnv('sonarqube_server') {
                         sh """
                         mvn sonar:sonar \
                         -Dsonar.projectKey=sqp_019f2885144ada3796a9931347d41bbe78036c02 \
-                        -Dsonar.projectName="Spring API AutoScan Jenkins" \
-                        -Dsonar.host.url=${SONARQUBE_SERVER} \
-                        -Dsonar.login=${SONARQUBE_TOKEN}
+                        -Dsonar.projectName="Spring API AutoScan Jenkins"
                         """
                     }
                 }
@@ -50,10 +46,10 @@ pipeline {
                 }
             }
         }
-        stage('Deploy to Dev ENV') {
+        stage('Deploy to dev env') {
             steps {
                 // Uncomment the line below to run the Docker container if required
-                // sh 'docker run -d -p 9999:8080 sophak12/spring-api'
+                // sh 'docker run -d -p 9999:8080 ${DOCKER_IMAGE_NAME}'
                 echo "Skipping deploy stage for now."
             }
         }
