@@ -5,7 +5,6 @@ pipeline {
     environment {
         TIMESTAMP = sh(script: 'TZ="Asia/Phnom_Penh" date +%d%m%Y%H%M', returnStdout: true).trim()
         DOCKER_IMAGE_NAME = "devsec_spring_maven:${TIMESTAMP}"
-        DOCKER_IMAGE_NAME = "devsec_spring_maven:${GIT_TAG == 'no-tag' ? COMMIT_HASH : GIT_TAG}-${COMMIT_HASH}"
     }
     stages {
         stage('Build Images') {
