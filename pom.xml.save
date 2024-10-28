@@ -12,10 +12,10 @@
     </parent>
 
     <groupId>com.sophak</groupId>
-    <artifactId>spring_maven_customer_api</artifactId>
+    <artifactId>pvh_pholsophak_spring</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>spring_maven_customer_api</name>
-    <description>spring_maven_customer_api</description>
+    <name>pvh</name>
+    <description>pvh_pholsophak_spring</description>
 
     <properties>
         <java.version>17</java.version>
