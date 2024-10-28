@@ -48,7 +48,7 @@ pipeline {
             steps {
                 defectDojoPublisher(
                     defectDojoUrl: 'http://35.187.239.28:8080',
-                    defectDojoTokenId: 'defectdojo_token', // Jenkins credentials ID for DefectDojo token
+                    defectDojoTokenId: 'defectdojo_token',
                     scanType: 'Dependency Check Scan',
                     filePath: 'target/dependency-check-report.xml',
                     active: true,
