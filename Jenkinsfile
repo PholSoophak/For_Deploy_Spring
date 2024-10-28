@@ -3,7 +3,7 @@ pipeline {
         label 'maven'
     }
     environment {
-        DATE_TIME = sh(script: 'TZ="Asia/Phnom_Penh" date +%Y%m%d%H%M', returnStdout: true).trim()
+        DATE_TIME = sh(script: 'TZ="Asia/Phnom_Penh" date +%d%m%Y%H%M', returnStdout: true).trim()
         DOCKER_IMAGE_NAME = "devsec_spring_maven:${DATE_TIME}"
     }
     stages {
@@ -12,7 +12,8 @@ pipeline {
                 sh 'mvn clean install'
                 sh 'mvn package'
                 sh 'docker build -t ${DOCKER_IMAGE_NAME} .'
-                sh 'docker images'
+                echo "Docker image built: ${DOCKER_IMAGE_NAME}"  // Echo the new image name and tag
+                sh 'docker images | grep devsec_spring_maven'    // Show the newly built image specifically
             }
         }
         stage('Test Maven') {
@@ -48,20 +49,32 @@ pipeline {
         //         }
         //     }
         // }
-        stage('Upload Scan to DefectDojo') {
+        stage('Verify Scan File') {
             steps {
-                defectDojoPublisher(
-                    defectDojoUrl: 'http://35.187.239.28:8080',     
-                    defectDojoCredentialsId: 'defectdojo_token', // Jenkins credentials ID for DefectDojo token
-                    scanType: 'Dependency Check Scan',
-                    artifact: 'target/dependency-check-report.xml',
-                    autoCreateEngagements: true, // Automatically creates engagements if they don’t exist
-                    autoCreateProducts: true, // Automatically creates products if they don’t exist
-                    engagementName: 'Automated Engagement - Spring API',
-                    productName: 'Spring API Automate Scan From Jenkins'
-                )
+                sh 'ls -l target/dependency-check-report.xml'  // Confirm file presence
+                sh 'cat target/dependency-check-report.xml'    // Optional: Display file content for verification
             }
         }
+
+        stage('Upload Scan to DefectDojo') {
+            steps {
+                script {
+                    echo "Uploading scan to DefectDojo..."
+                    def result = defectDojoPublisher(
+                        defectDojoUrl: 'http://35.187.239.28:8080',
+                        defectDojoCredentialsId: 'defectdojo_token',
+                        scanType: 'Dependency Check Scan',
+                        artifact: 'target/dependency-check-report.xml',
+                        autoCreateEngagements: true,
+                        autoCreateProducts: true,
+                        engagementName: 'Automated Engagement - Spring API',
+                        productName: 'Spring API Automate Scan From Jenkins'
+                    )
+                    echo "DefectDojo upload result: ${result}"
+                }
+            }
+        }
+
         stage('Deploy to dev env') {
             steps {
                 echo "Skipping deploy stage for now."
