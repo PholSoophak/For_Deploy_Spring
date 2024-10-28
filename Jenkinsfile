@@ -47,23 +47,25 @@ pipeline {
         stage('Upload Scan to DefectDojo') {
             steps {
                 defectDojoPublisher(
-                    defectDojoUrl: 'http://35.187.239.28:8080',
-                    defectDojoTokenId: 'defectdojo_token',
+                    defectDojoUrl: 'http://35.187.239.28',
+                    defectDojoTokenCredentialId: 'defectdojo_token', // Credentials ID configured in Jenkins for the DefectDojo API token
                     scanType: 'Dependency Check Scan',
-                    filePath: 'target/dependency-check-report.xml',
-                    active: true,
-                    verified: true,
-                    closeOldFindings: true,
+                    artifact: 'target/dependency-check-report.xml',
+                    autoCreateEngagement: true, // Automatically create engagement if not exists
+                    autoCreateProduct: true, // Automatically create product if not exists
+                    reimportScan: true, // Reupload scan if it already exists
+                    engagementName: 'Automated Engagement - Spring API',
+                    productName: 'Spring API Project',
+                    environment: 'Development',
+                    buildId: "${env.BUILD_ID}",
                     deduplicationOnEngagement: true,
-                    tags: 'v1,dependency-check',
-                    testTitle: 'Dependency Check Maven',
-                    description: 'Automated scan upload from Jenkins pipeline'
+                    closeOldFindings: true,
+                    tags: 'v1,dependency-check'
                 )
             }
         }
         stage('Deploy to dev env') {
             steps {
-                echo "Not Yet Deployed"
                 echo "Skipping deploy stage for now."
             }
         }
