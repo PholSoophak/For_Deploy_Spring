@@ -22,7 +22,6 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 script {
-                    // Use the configured SonarQube server name (replace 'sonarqube_server' with your SonarQube configuration name)
                     withSonarQubeEnv('sonarqube_server') {
                         sh """
                         mvn sonar:sonar \
@@ -36,8 +35,7 @@ pipeline {
         stage('Quality Gate') {
             steps {
                 script {
-                    // Wait for SonarQube analysis to complete and check the quality gate status
-                    timeout(time: 5, unit: 'MINUTES') {
+                    timeout(time: 10, unit: 'MINUTES') {
                         def qg = waitForQualityGate()
                         if (qg.status != 'OK') {
                             error "Pipeline aborted due to quality gate failure: ${qg.status}"
@@ -46,10 +44,26 @@ pipeline {
                 }
             }
         }
+        stage('Upload Scan to DefectDojo') {
+            steps {
+                defectDojoPublisher(
+                    defectDojoUrl: 'http://35.187.239.28:8080',
+                    defectDojoTokenId: 'defectdojo_token', // Jenkins credentials ID for DefectDojo token
+                    scanType: 'Dependency Check Scan',
+                    filePath: 'target/dependency-check-report.xml',
+                    active: true,
+                    verified: true,
+                    closeOldFindings: true,
+                    deduplicationOnEngagement: true,
+                    tags: 'v1,dependency-check',
+                    testTitle: 'Dependency Check Maven',
+                    description: 'Automated scan upload from Jenkins pipeline'
+                )
+            }
+        }
         stage('Deploy to dev env') {
             steps {
-                // Uncomment the line below to run the Docker container if required
-                // sh 'docker run -d -p 9999:8080 ${DOCKER_IMAGE_NAME}'
+                echo "Not Yet Deployed"
                 echo "Skipping deploy stage for now."
             }
         }
