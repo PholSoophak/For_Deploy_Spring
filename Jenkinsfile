@@ -3,7 +3,8 @@ pipeline {
         label 'maven'
     }
     environment {
-        DOCKER_IMAGE_NAME = 'devsec_spring_maven'
+        TIMESTAMP = sh(script: 'TZ="Asia/Phnom_Penh" date +%Y%m%d%H%M%S', returnStdout: true).trim()
+        DOCKER_IMAGE_NAME = "devsec_spring_maven:${TIMESTAMP}"
     }
     stages {
         stage('Build Images') {
@@ -49,14 +50,14 @@ pipeline {
         stage('Upload Scan to DefectDojo') {
             steps {
                 defectDojoPublisher(
-                    defectDojoUrl: 'http://35.187.239.28',
+                    defectDojoUrl: 'http://35.187.239.2:8080',
                     defectDojoCredentialsId: 'defectdojo_token', // Jenkins credentials ID for DefectDojo token
                     scanType: 'Dependency Check Scan',
                     artifact: 'target/dependency-check-report.xml',
                     autoCreateEngagements: true, // Automatically creates engagements if they don’t exist
                     autoCreateProducts: true, // Automatically creates products if they don’t exist
                     engagementName: 'Automated Engagement - Spring API',
-                    productName: 'Spring API Project'
+                    productName: 'Spring API Automate Scan From Jenkins'
                 )
             }
         }
