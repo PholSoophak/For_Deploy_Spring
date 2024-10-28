@@ -3,8 +3,9 @@ pipeline {
         label 'maven'
     }
     environment {
-        DATE_TIME = sh(script: 'TZ="Asia/Phnom_Penh" date +%d%m%Y%H%M', returnStdout: true).trim()
-        DOCKER_IMAGE_NAME = "devsec_spring_maven:${DATE_TIME}"
+        GIT_TAG = sh(script: 'git describe --tags --abbrev=0 || echo "no-tag"', returnStdout: true).trim()
+        COMMIT_HASH = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
+        DOCKER_IMAGE_NAME = "devsec_spring_maven:${GIT_TAG == 'no-tag' ? COMMIT_HASH : GIT_TAG}-${COMMIT_HASH}"
     }
     stages {
         stage('Build Images') {
@@ -29,33 +30,26 @@ pipeline {
                         sh """
                         mvn sonar:sonar \
                         -Dsonar.projectKey=sqp_019f2885144ada3796a9931347d41bbe78036c02 \
-                        -Dsonar.projectName="Spring API AutoScan Jenkins"
+                        -Dsonar.projectName="Spring API Automate Scan Jenkins Pipeline"
                         """
                     }
                 }
             }
         }
-        // Wait for the SonarQube Quality Gate result
-        // stage('Quality Gate') {
-        //     steps {
-        //         script {
-        //             def qg = waitForQualityGate abortPipeline: false, credentialsId: 'sonar-token'
-        //             if (qg.status != 'OK') {
-        //                 echo "Quality gate failed with status: ${qg.status}"
-        //                 // Optionally set a warning or handle the failure in a custom way
-        //             } else {
-        //                 echo "Quality gate passed successfully."
-        //             }
-        //         }
-        //     }
-        // }
-        stage('Verify Scan File') {
+        Wait for the SonarQube Quality Gate result
+        stage('Quality Gate') {
             steps {
-                sh 'ls -l target/dependency-check-report.xml'  // Confirm file presence
-                sh 'cat target/dependency-check-report.xml'    // Optional: Display file content for verification
+                script {
+                    def qg = waitForQualityGate abortPipeline: false, credentialsId: 'sonar-token'
+                    if (qg.status != 'OK') {
+                        echo "Quality gate failed with status: ${qg.status}"
+                        // Optionally set a warning or handle the failure in a custom way
+                    } else {
+                        echo "Quality gate passed successfully."
+                    }
+                }
             }
         }
-
         stage('Upload Scan to DefectDojo') {
             steps {
                 script {
@@ -77,6 +71,7 @@ pipeline {
 
         stage('Deploy to dev env') {
             steps {
+                echo "ot torn deploy teee"
                 echo "Skipping deploy stage for now."
             }
         }
