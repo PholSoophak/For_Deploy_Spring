@@ -8,7 +8,7 @@ pipeline {
         SONARQUBE_TOKEN = 'squ_f532b03bc7446ec1f97b404ca40ae1fb04a8a9b3'
     }
     stages {
-        stage('Build_Docker_Images') {
+        stage('Build Images') {
             steps {
                 sh 'mvn clean install'
                 sh 'mvn package'
