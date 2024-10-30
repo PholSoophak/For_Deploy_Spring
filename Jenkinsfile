@@ -5,7 +5,7 @@ pipeline {
     environment {
         TIMESTAMP = sh(script: 'TZ="Asia/Phnom_Penh" date +%d%m%Y%H%M', returnStdout: true).trim()
         DOCKER_IMAGE_NAME = "devsec_spring_maven:${TIMESTAMP}"
-        
+
         JAVA_HOME = '/usr/lib/jvm/java-17-openjdk-amd64'  // Set to Java 17 path
         PATH = "${JAVA_HOME}/bin:${PATH}"
     }
@@ -46,19 +46,21 @@ pipeline {
         // }
         stage('SonarQube Analysis') {
             steps {
-                    script {
-                            withSonarQubeEnv('sonarqube_server') {
-                                sh '''
-                                /var/opt/sonar-scanner-4.5.0.2216-linux/bin/sonar-scanner \
-                                -Dsonar.projectKey=main \
-                                -Dsonar.projectName="Scan multi Project Automate Scan" \
-                                -Dsonar.sources="src/main/java" \
-                                -Dsonar.java.binaries="target/classes"
-                                '''
-                            }
+                script {
+                    withSonarQubeEnv('sonarqube_server') {
+                        sh '''
+                        JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64 \
+                        /var/opt/sonar-scanner-4.5.0.2216-linux/bin/sonar-scanner \
+                        -Dsonar.projectKey=main \
+                        -Dsonar.projectName="Scan multi Project Automate Scan" \
+                        -Dsonar.sources="src/main/java" \
+                        -Dsonar.java.binaries="target/classes"
+                        '''
                     }
                 }
+            }
         }
+
         
         // stage('Quality Gate') {
         //     steps {
