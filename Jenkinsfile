@@ -43,18 +43,18 @@ pipeline {
         // }
         stage('SonarQube Analysis') {
             steps {
-                script {
-                    withSonarQubeEnv('sonarqube_server') {
-                        sh '''
-                        $SCANNER_HOME/bin/sonar-scanner \
-                        -Dsonar.projectKey=main \
-                        -Dsonar.projectName="Single Project Automate Scan" \
-                        -Dsonar.sources="src/main/java" \
-                        -Dsonar.java.binaries="target/classes"
-                        '''
+                    script {
+                        withSonarQubeEnv('sonarqube_server') {
+                            sh '''
+                            sonar-scanner \
+                            -Dsonar.projectKey=main \
+                            -Dsonar.projectName="Scan multi Project Automate Scan" \
+                            -Dsonar.sources="src/main/java" \
+                            -Dsonar.java.binaries="target/classes"
+                            '''
+                        }
                     }
                 }
-            }
         }
         
         // stage('Quality Gate') {
