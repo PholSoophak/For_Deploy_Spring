@@ -62,7 +62,7 @@ pipeline {
                     echo "Uploading scan to DefectDojo..."
                     def result = defectDojoPublisher(
                         defectDojoUrl: 'http://35.187.239.28:8080',
-                        defectDojoCredentialsId: 'defectdojo_token',
+                        defectDojoCredentialsId: 'Token 612f6ebd1ad696fb4bc685a806e84d8c716d1b94',
                         scanType: 'Dependency Check Scan',
                         artifact: 'owasp-dependency-check-logs/dependency-check-report.json',  // Updated path
                         autoCreateEngagements: true,
