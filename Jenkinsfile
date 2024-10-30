@@ -34,8 +34,8 @@ pipeline {
                     withSonarQubeEnv('sonarqube_server') {
                         sh """
                         mvn sonar:sonar \
-                        -Dsonar.projectKey=sqp_019f2885144ada3796a9931347d41bbe78036c02 \
-                        -Dsonar.projectName="Spring API Automate Scan Jenkins Pipeline"
+                        -Dsonar.projectKey=sqp_979f7ec25470bc72daec5132f153921f3abb4627 \
+                        -Dsonar.projectName=" New Spring API Automate Scan Jenkins Pipeline"
                         """
                     }
                 }
@@ -67,7 +67,7 @@ pipeline {
                         artifact: 'owasp-dependency-check-logs/dependency-check-report.json',  // Updated path
                         autoCreateEngagements: true,
                         autoCreateProducts: true,
-                        engagementName: 'Automated Engagement - Spring API',
+                        engagementName: 'New Automated Engagement - Spring API',
                         productName: 'Spring API Automate Scan From Jenkins'
                     )
                     echo "DefectDojo upload result: ${result}"
