@@ -31,38 +31,19 @@ pipeline {
             }
         }
 
-        // stage('SonarQube Analysis') {
-        //     steps {
-        //         script {
-        //             withSonarQubeEnv('sonarqube_server') {
-        //                 sh """
-        //                 mvn sonar:sonar \
-        //                 -Dsonar.projectKey=sqp_019f2885144ada3796a9931347d41bbe78036c02 \
-        //                 -Dsonar.projectName="Spring API Automate Scan Jenkins Pipeline"
-        //                 """
-        //             }
-        //         }
-        //     }
-        // }
         stage('SonarQube Analysis') {
             steps {
                 script {
                     withSonarQubeEnv('sonarqube_server') {
-                        sh '''
-                        JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64 \
-                        /var/opt/sonar-scanner-4.8.0.2856-linux/bin/sonar-scanner \
-                        -Dsonar.projectKey=main \
-                        -Dsonar.projectName="Scan multi Project Automate Scan" \
-                        -Dsonar.sources="src/main/java" \
-                        -Dsonar.java.binaries="target/classes"
-                        '''
+                        sh """
+                        mvn sonar:sonar \
+                        -Dsonar.projectKey=sqp_019f2885144ada3796a9931347d41bbe78036c02 \
+                        -Dsonar.projectName="Spring API Automate Scan Jenkins Pipeline"
+                        """
                     }
                 }
-            }
-        }
+            }        
 
-
-        
         // stage('Quality Gate') {
         //     steps {
         //         script {
