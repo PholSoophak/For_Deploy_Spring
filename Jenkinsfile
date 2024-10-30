@@ -13,7 +13,7 @@ pipeline {
                 sh 'mvn package'
                 // Run OWASP Dependency Check to generate the vulnerability report
                 echo'Check scan dependencies'
-                sh 'mvn org.owasp:dependency-check-maven:check'
+                sh ' '
                 // Build the Docker image with dynamic tagging
                 sh "docker build -t ${DOCKER_IMAGE_NAME} ."
                 echo "Docker image built: ${DOCKER_IMAGE_NAME}"  // Echo the new image name and tag
@@ -28,15 +28,30 @@ pipeline {
             }
         }
 
+        // stage('SonarQube Analysis') {
+        //     steps {
+        //         script {
+        //             withSonarQubeEnv('sonarqube_server') {
+        //                 sh """
+        //                 mvn sonar:sonar \
+        //                 -Dsonar.projectKey=sqp_019f2885144ada3796a9931347d41bbe78036c02 \
+        //                 -Dsonar.projectName="Spring API Automate Scan Jenkins Pipeline"
+        //                 """
+        //             }
+        //         }
+        //     }
+        // }
         stage('SonarQube Analysis') {
             steps {
                 script {
                     withSonarQubeEnv('sonarqube_server') {
-                        sh """
-                        mvn sonar:sonar \
-                        -Dsonar.projectKey=sqp_019f2885144ada3796a9931347d41bbe78036c02 \
-                        -Dsonar.projectName="Spring API Automate Scan Jenkins Pipeline"
-                        """
+                        sh '''
+                        $SCANNER_HOME/bin/sonar-scanner \
+                        -Dsonar.projectKey=main \
+                        -Dsonar.projectName="Single Project Automate Scan" \
+                        -Dsonar.sources="src/main/java" \
+                        -Dsonar.java.binaries="target/classes"
+                        '''
                     }
                 }
             }
