@@ -55,7 +55,7 @@ pipeline {
                 }
             }
         } */
-        
+
         stage('Upload Scan to DefectDojo') {
             steps {
                 script {
@@ -64,16 +64,17 @@ pipeline {
                         defectDojoUrl: 'http://35.187.239.28:8080',
                         defectDojoCredentialsId: 'defectdojo_token',
                         scanType: 'Dependency Check Scan',
-                        artifact: '/owasp-dependency-check-logs/dependency-check-report.json',
+                        artifact: 'owasp-dependency-check-logs/dependency-check-report.json',  // Updated path
                         autoCreateEngagements: true,
                         autoCreateProducts: true,
-                        engagementName: 'Automated Engagement - Spring API New',
+                        engagementName: 'Automated Engagement - Spring API',
                         productName: 'Spring API Automate Scan From Jenkins'
                     )
                     echo "DefectDojo upload result: ${result}"
                 }
             }
         }
+
 
         stage('Deploy to dev env') {
             steps {
