@@ -12,7 +12,7 @@ pipeline {
                 sh 'mvn clean install'
                 sh 'mvn package'
                 // Run OWASP Dependency Check to generate the vulnerability report
-                echo'Check scan dependencies'
+                echo 'Check scan dependencies'
                 sh 'mvn org.owasp:dependency-check-maven:check'
                 // Build the Docker image with dynamic tagging
                 sh "docker build -t ${DOCKER_IMAGE_NAME} ."
@@ -64,7 +64,7 @@ pipeline {
                         defectDojoUrl: 'http://35.187.239.28:8080',
                         defectDojoCredentialsId: 'defectdojo_token',
                         scanType: 'Dependency Check Scan',
-                        artifact: 'target/dependency-check-report.xml',
+                        artifact: '/owasp-dependency-check-logs/dependency-check-report.json',
                         autoCreateEngagements: true,
                         autoCreateProducts: true,
                         engagementName: 'Automated Engagement - Spring API',
