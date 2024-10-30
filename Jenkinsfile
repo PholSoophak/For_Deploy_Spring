@@ -42,19 +42,19 @@ pipeline {
             }
         }
         
-        // stage('Quality Gate') {
-        //     steps {
-        //         script {
-        //             def qg = waitForQualityGate abortPipeline: false, credentialsId: 'sonar-token'
-        //             if (qg.status != 'OK') {
-        //                 echo "Quality gate failed with status: ${qg.status}"
-        //                 // Optionally set a warning or handle the failure in a custom way
-        //             } else {
-        //                 echo "Quality gate passed successfully."
-        //             }
-        //         }
-        //     }
-        // }
+        /* stage('Quality Gate') {
+            steps {
+                script {
+                    def qg = waitForQualityGate abortPipeline: false, credentialsId: 'sonar-token'
+                    if (qg.status != 'OK') {
+                        echo "Quality gate failed with status: ${qg.status}"
+                        // Optionally set a warning or handle the failure in a custom way
+                    } else {
+                        echo "Quality gate passed successfully."
+                    }
+                }
+            }
+        } */
         
         stage('Upload Scan to DefectDojo') {
             steps {
@@ -67,7 +67,7 @@ pipeline {
                         artifact: '/owasp-dependency-check-logs/dependency-check-report.json',
                         autoCreateEngagements: true,
                         autoCreateProducts: true,
-                        engagementName: 'Automated Engagement - Spring API',
+                        engagementName: 'Automated Engagement - Spring API New',
                         productName: 'Spring API Automate Scan From Jenkins'
                     )
                     echo "DefectDojo upload result: ${result}"
