@@ -50,7 +50,7 @@ pipeline {
                     withSonarQubeEnv('sonarqube_server') {
                         sh '''
                         JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64 \
-                        /var/opt/sonar-scanner-4.5.0.2216-linux/bin/sonar-scanner \
+                        /var/opt/sonar-scanner-4.8.0.2856-linux/bin/sonar-scanner \
                         -Dsonar.projectKey=main \
                         -Dsonar.projectName="Scan multi Project Automate Scan" \
                         -Dsonar.sources="src/main/java" \
@@ -60,6 +60,7 @@ pipeline {
                 }
             }
         }
+
 
         
         // stage('Quality Gate') {
