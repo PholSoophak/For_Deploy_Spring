@@ -5,6 +5,9 @@ pipeline {
     environment {
         TIMESTAMP = sh(script: 'TZ="Asia/Phnom_Penh" date +%d%m%Y%H%M', returnStdout: true).trim()
         DOCKER_IMAGE_NAME = "devsec_spring_maven:${TIMESTAMP}"
+        
+        JAVA_HOME = '/usr/lib/jvm/java-17-openjdk-amd64'  // Set to Java 17 path
+        PATH = "${JAVA_HOME}/bin:${PATH}"
     }
     stages {
         stage('Build Images') {
