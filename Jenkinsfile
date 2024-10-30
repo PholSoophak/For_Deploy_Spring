@@ -13,7 +13,7 @@ pipeline {
                 sh 'mvn package'
                 // Run OWASP Dependency Check to generate the vulnerability report
                 echo'Check scan dependencies'
-                sh ' '
+                sh 'mvn org.owasp:dependency-check-maven:check'
                 // Build the Docker image with dynamic tagging
                 sh "docker build -t ${DOCKER_IMAGE_NAME} ."
                 echo "Docker image built: ${DOCKER_IMAGE_NAME}"  // Echo the new image name and tag
@@ -27,6 +27,7 @@ pipeline {
                 sh 'mvn test'
             }
         }
+        
         stage('SonarQube Analysis') {
             steps {
                 script {
@@ -38,8 +39,9 @@ pipeline {
                         """
                     }
                 }
-            }        
-
+            }
+        }
+        
         // stage('Quality Gate') {
         //     steps {
         //         script {
