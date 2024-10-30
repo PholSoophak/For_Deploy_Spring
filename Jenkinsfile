@@ -44,15 +44,15 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                     script {
-                        withSonarQubeEnv('sonarqube_server') {
-                            sh '''
-                            sonar-scanner \
-                            -Dsonar.projectKey=main \
-                            -Dsonar.projectName="Scan multi Project Automate Scan" \
-                            -Dsonar.sources="src/main/java" \
-                            -Dsonar.java.binaries="target/classes"
-                            '''
-                        }
+                            withSonarQubeEnv('sonarqube_server') {
+                                sh '''
+                                /var/opt/sonar-scanner-4.5.0.2216-linux/bin/sonar-scanner \
+                                -Dsonar.projectKey=main \
+                                -Dsonar.projectName="Scan multi Project Automate Scan" \
+                                -Dsonar.sources="src/main/java" \
+                                -Dsonar.java.binaries="target/classes"
+                                '''
+                            }
                     }
                 }
         }
